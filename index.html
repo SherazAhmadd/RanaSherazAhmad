@@ -1,0 +1,2401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rana Sheraz Ahmad — Computational Biology</title>
+  <meta name="description"
+    content="Rana Sheraz Ahmad — Research assistant working on computational genomics, multi-omics integration, and Complex Human Diseases.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="assets/batman.png">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ==========================================================================
+   GLOBAL TOKENS
+   ========================================================================== */
+
+    :root {
+      --paper: #ffffff;
+      --paper-raised: #f7f7f7;
+      --ink: #212121;
+      --ink-soft: #565f5a;
+      --teal: #22484a;
+      --teal-deep: #152f31;
+      --rust: #0072a3;
+      --heading: #212121;
+      --moss: #4b6b45;
+      --line: #dcdcdc;
+      --line-soft: #ececec;
+
+      --max: 1280px;
+      --sidebar-width: 160px;
+
+      --header-bg: #212121;
+      --header-bg-dark: #151515;
+      --header-ink: #ffffff;
+      --header-ink-soft: rgba(255, 255, 255, .88);
+      --header-ink-faint: rgba(255, 255, 255, .65);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Open Sans', sans-serif;
+      font-size: 12pt;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--teal-deep);
+      text-decoration: none;
+      border-bottom: none;
+      font-style: italic;
+    }
+
+    a:hover {
+      border-bottom-color: transparent;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 600;
+      color: var(--heading);
+      margin: 0;
+    }
+
+    ::selection {
+      background: var(--rust);
+      color: #fff;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        font-size: 12pt;
+      }
+    }
+
+    /* ==========================================================================
+   PAGE SHELL
+   ========================================================================== */
+
+    @media (min-width: 900px) {
+      body {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* the home view wraps the sidebar and content: let it fill the window
+         so the content column is centred on wide screens */
+      #home-view {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .site-header {
+        width: var(--sidebar-width);
+        min-width: var(--sidebar-width);
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: var(--header-bg);
+        z-index: 10;
+        overflow-y: auto;
+        border-right: 1px solid var(--header-bg-dark);
+      }
+
+      .page-content-wrapper {
+        margin-left: var(--sidebar-width);
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 899px) {
+      .site-header {
+        position: relative;
+        background: var(--header-bg);
+        width: 100%;
+      }
+    }
+
+    /* ==========================================================================
+   HEADER (SIDEBAR) CONTENT
+   ========================================================================== */
+
+    .header-inner {
+      padding: 16px 12px;
+    }
+
+    .header-top {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .identity {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .identity h1 {
+      font-size: 1.6rem;
+      line-height: 1.15;
+      color: var(--header-ink);
+      word-spacing: 120vw;
+    }
+
+    .identity .role {
+      font-size: 0.85rem;
+      color: var(--header-ink-soft);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .identity .affil {
+      font-size: .75rem;
+      color: var(--header-ink-faint);
+    }
+
+    .contact-list-inline {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: .75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .contact-list-inline a {
+      border-bottom: none;
+      color: var(--header-ink-soft);
+    }
+
+    .contact-list-inline a:hover {
+      color: var(--header-ink);
+      text-decoration: underline;
+    }
+
+    .contact-list-inline .glyph {
+      font-family: 'Open Sans', sans-serif;
+      font-size: .78em;
+      color: var(--header-ink-faint);
+      margin-right: .4em;
+      display: inline-block;
+      width: 18px;
+    }
+
+    @media (max-width: 899px) {
+      .header-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .identity {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .identity h1 {
+        word-spacing: normal;
+      }
+
+      .contact-list-inline {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px 14px;
+      }
+    }
+
+    /* Email list in the Get in touch section */
+    .contact-emails {
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .contact-emails li {
+      margin-bottom: 4px;
+    }
+
+    /* ==========================================================================
+   SIDE NAVIGATION
+   ========================================================================== */
+
+    nav.side-nav {
+      margin-top: 24px;
+      width: 100%;
+    }
+
+    nav.side-nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* left panel links (navigation and contacts) are upright, not italic */
+    .site-header a {
+      font-style: normal;
+    }
+
+    nav.side-nav a {
+      color: var(--header-ink-soft);
+      font-size: 0.85rem;
+      border: none;
+      display: block;
+      padding: 2px 0;
+      text-decoration: none;
+      letter-spacing: .01em;
+    }
+
+    nav.side-nav a:hover,
+    nav.side-nav a.active {
+      color: var(--header-ink);
+      font-weight: 500;
+      border-bottom: none;
+    }
+
+    @media (max-width: 899px) {
+      nav.side-nav ul {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+    }
+
+    /* ==========================================================================
+   CONTENT BASE
+   ========================================================================== */
+
+    main {
+      max-width: var(--max);
+      margin: 0 auto;
+      width: 100%;
+      padding: 48px 40px 80px 40px;
+    }
+
+    section {
+      padding-bottom: 45px;
+      margin-bottom: 45px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    section:last-child {
+      border-bottom: none;
+    }
+
+    .about-heading-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .about-heading-row .hero-emblem {
+      width: 48px;
+      height: 48px;
+      flex: none;
+      display: block;
+    }
+
+    section>h2 {
+      font-size: 1.75rem;
+      font-variant: small-caps;
+      letter-spacing: .03em;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--heading);
+    }
+
+    section p {
+      max-width: 100%;
+      color: var(--ink);
+      text-align: justify;
+      text-justify: inter-word;
+    }
+
+    @media (max-width: 899px) {
+      main {
+        padding: 32px 16px 50px;
+      }
+    }
+
+    /* ==========================================================================
+   COMPONENT: ENTRY
+   ========================================================================== */
+
+    .entry {
+      padding: 20px 0;
+      border-top: 1px solid var(--line-soft);
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 20px;
+    }
+
+    .entry:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .entry .when {
+      font-family: 'Open Sans', sans-serif;
+      font-size: .78rem;
+      color: var(--rust);
+      padding-top: 3px;
+    }
+
+    .entry h3 {
+      font-size: 1.05rem;
+      color: var(--ink);
+      font-variant: normal;
+      letter-spacing: normal;
+      margin-bottom: 3px;
+    }
+
+    .entry .where {
+      font-size: .9rem;
+      color: var(--ink);
+      margin-bottom: 0;
+    }
+
+    .entry p,
+    .entry ul {
+      max-width: 100%;
+      margin: 0;
+      text-align: justify;
+      text-justify: inter-word;
+    }
+
+    .entry ul {
+      margin: 0;
+      padding-left: 1.1em;
+    }
+
+    .entry li {
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 899px) {
+      .entry {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+    }
+
+    /* ==========================================================================
+   COMPONENT: FLAT LIST
+   ========================================================================== */
+
+    .flat-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .flat-list li {
+      padding: 12px 0;
+      border-top: 1px solid var(--line-soft);
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+    }
+
+    .flat-list li:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .flat-list .when {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1rem;           /* same size as the post title and description */
+      color: var(--ink-soft);
+    }
+
+    .flat-list strong {
+      font-weight: 600;
+    }
+
+    .flat-list strong a {
+      font-style: normal;
+    }
+
+    .flat-list .sub {
+      color: var(--ink-soft);
+      display: block;
+      margin-top: 4px;
+      text-align: justify;
+      text-justify: inter-word;
+    }
+
+    @media (max-width: 899px) {
+      .flat-list li {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+    }
+
+    /* ==========================================================================
+   SECTION: ABOUT
+   ========================================================================== */
+
+    .about-container {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    #about {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .about-text {
+      flex: 1;
+    }
+
+    .about-text p {
+      color: var(--ink);
+      margin-top: 0;
+      margin-bottom: 1em;
+    }
+
+    .about-text p:last-child,
+    .about-text ul:last-child {
+      margin-bottom: 0;
+    }
+
+    .about-text a {
+      color: var(--rust);
+      border-bottom: none;
+    }
+
+    /* About-text links are upright (the names inside them are wrapped in <em>/<i>) */
+    .about-text a,
+    .about-text a em,
+    .about-text a i {
+      font-style: normal;
+    }
+
+    .about-text a:hover {
+      color: var(--teal-deep);
+      border-bottom-color: transparent;
+    }
+
+    .about-visuals {
+      flex: none;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .about-image-placeholder {
+      width: 100%;
+      aspect-ratio: 3/4;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, .04) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><rect width="60" height="60" fill="none"/><circle cx="30" cy="23" r="10" fill="rgba(0,0,0,0.15)"/><rect x="12" y="37" width="36" height="20" rx="10" fill="rgba(0,0,0,0.15)"/></svg>') center/cover;
+      border: 1px solid var(--line);
+    }
+
+    .about-caption {
+      text-align: center;
+    }
+
+    .about-caption .name {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 600;
+      font-size: 1.35rem;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+
+    .about-caption .status {
+      color: var(--ink);
+      font-size: .85rem;
+      margin-top: 6px;
+    }
+
+    .social-icons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .social-icons a {
+      color: var(--ink);
+      border-bottom: none;
+      display: inline-flex;
+      transition: color 0.2s;
+    }
+
+    .social-icons a:hover {
+      color: var(--rust);
+    }
+
+    .social-icons svg {
+      width: 26px;
+      height: 26px;
+      fill: currentColor;
+    }
+
+    @media (max-width: 899px) {
+      .about-container {
+        flex-direction: column-reverse;
+        gap: 24px;
+        align-items: center;
+      }
+
+      .about-visuals {
+        width: 240px;
+      }
+    }
+
+    @media (min-width: 900px) and (max-width: 1199px) {
+      .about-visuals {
+        width: 240px;
+      }
+    }
+
+    /* ==========================================================================
+   SECTION: RESEARCH FOCUS
+   ========================================================================== */
+
+    .interest {
+      margin-bottom: 16px;
+    }
+
+    .interest:last-child {
+      margin-bottom: 0;
+    }
+
+    .interest p {
+      margin: 0;
+      max-width: 100%;
+    }
+
+    .interest strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* ==========================================================================
+   SECTION: NEWS
+   ========================================================================== */
+
+    /* News, shown as part of the About section beside the photo */
+    .about-news {
+      margin-top: 1.2em;
+    }
+
+    .about-news h3 {
+      font-size: 1.15rem;
+      font-variant: small-caps;
+      letter-spacing: .03em;
+      margin-bottom: 10px;
+    }
+
+    .about-news .news-list {
+      gap: 8px;
+    }
+
+    .about-news .news-item {
+      grid-template-columns: 70px 1fr;
+      gap: 12px;
+      font-size: .92rem;
+      line-height: 1.5;
+    }
+
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .news-item {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 16px;
+      max-width: 100%;
+    }
+
+    .news-item time {
+      font-family: 'Open Sans', sans-serif;
+      font-size: .78rem;
+      color: var(--rust);
+      padding-top: 2px;
+    }
+
+    .news-item>div {
+      text-align: justify;
+      text-justify: inter-word;
+    }
+
+    @media (max-width: 899px) {
+      .news-item {
+        grid-template-columns: 75px 1fr;
+      }
+    }
+
+    /* ==========================================================================
+   SECTION: PUBLICATIONS
+   ========================================================================== */
+
+    .pubs-subhead {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--ink);
+      margin-bottom: 14px;
+    }
+
+    ul.pub-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .pub {
+      padding: 14px 0;
+    }
+
+    .pub-row {
+      display: flex;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .pub-cover {
+      width: 96px;
+      height: auto;            /* keeps each cover's own proportions: never cropped */
+      flex: none;
+      border: 1px solid var(--line);
+      object-fit: contain;
+      display: block;
+      align-self: flex-start;
+    }
+
+    .pub-cover .cover-year {
+      font-family: 'Open Sans', sans-serif;
+      font-size: .7rem;
+      opacity: .85;
+      align-self: flex-end;
+    }
+
+    .pub-cover .cover-name {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      line-height: 1.18;
+    }
+
+    .cover-bmcgenomics {
+      background: linear-gradient(160deg, var(--teal) 0%, var(--teal-deep) 100%);
+    }
+
+    .cover-scirep {
+      background: linear-gradient(160deg, #2b2b2b 0%, #111 100%);
+    }
+
+    .cover-aichem {
+      background: linear-gradient(160deg, var(--rust) 0%, var(--header-bg-dark) 100%);
+    }
+
+    .pub-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .pub-title-link {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink);
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+
+    .pub-citation {
+      font-size: 1rem;
+      color: var(--ink-soft);
+      margin: 0 0 8px;
+      text-align: left;          /* normal word spacing in author lists */
+    }
+
+    .pub-citation em {
+      color: var(--ink);
+    }
+
+    /* Container to hold Abstract button and Links on the same line */
+    .pub-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 6px;
+    }
+
+    .abstract-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--rust);
+      cursor: pointer;
+    }
+
+    .abstract-toggle .caret {
+      display: inline-block;
+      transition: transform .15s ease;
+      font-size: .7em;
+    }
+
+    .abstract-toggle[aria-expanded="true"] .caret {
+      transform: rotate(90deg);
+    }
+
+    .pub-citation a.doi-link {
+      color: #0056b3;
+      border-bottom: none;
+    }
+
+    .pub-citation a.doi-link:hover {
+      color: #003366;
+      border-bottom-color: transparent;
+    }
+
+    .pub-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .pub-links a {
+      border-bottom: none;
+    }
+
+    /* resource links (GitHub, Zenodo, preprint, deployment) and DOIs read as links */
+    .pub-links a,
+    .doi-link {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .abstract-panel {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      padding: 14px;
+      background: var(--paper-raised);
+      border-left: 3px solid var(--rust);
+      width: 100%;
+    }
+
+    .abstract-panel[hidden] {
+      display: none;
+    }
+
+    .abstract-text {
+      flex: 1;
+      min-width: 0;
+      font-size: 1rem;
+      color: var(--ink);
+      text-align: justify;
+      text-justify: inter-word;
+    }
+
+    .abstract-figure {
+      flex: 0 0 220px;
+      max-width: 220px;
+    }
+
+    .abstract-figure img {
+      width: 100%;
+      height: auto;
+      max-height: 380px;
+      object-fit: contain;
+      display: block;
+      border: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    @media (max-width: 899px) {
+      .abstract-panel {
+        flex-direction: column;
+      }
+
+      .abstract-figure {
+        flex: none;
+        width: 100%;
+        height: 180px;
+      }
+    }
+
+    @media (max-width: 899px) {
+      .pub-row {
+        flex-direction: column;
+      }
+
+      .pub-cover {
+        width: 80px;
+        height: auto;
+      }
+    }
+
+    .teaching-role {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-top: 14px;
+      margin-bottom: 12px;
+    }
+
+    .teaching-list {
+      list-style-type: disc;
+      padding-left: 36px;
+      margin: 0;
+    }
+
+    .teaching-list li {
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    /* ==========================================================================
+   SECTION: AWARDS & HONOURS
+   ========================================================================== */
+
+    .awards-list {
+      list-style-type: disc;
+      padding-left: 36px;
+      margin: 0;
+    }
+
+    .awards-list li {
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .awards-list strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* ==========================================================================
+   SECTION: ACADEMIC MEMBERSHIPS
+   ========================================================================== */
+    .logo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      margin-top: 16px;
+      align-items: center;
+    }
+
+    .logo-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: 200px;
+      text-align: center;
+    }
+
+    .logo-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: var(--paper-raised);
+      border: 1px solid var(--line);
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Special style for the rectangular ICPGC banner logo */
+    .logo-img.rect {
+      width: 220px;
+      height: 130px;
+      border-radius: 6px;
+      object-fit: contain;
+      padding: 6px;
+    }
+
+    .logo-title {
+      font-size: 1.05rem;
+      line-height: 1.3;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* ==========================================================================
+   SECTION: MENTORSHIP
+   ========================================================================== */
+
+    .mentorship-role {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-top: 14px;
+      margin-bottom: 12px;
+    }
+
+    .mentorship-list {
+      list-style-type: disc;
+      padding-left: 36px;
+      margin: 0;
+    }
+
+    .mentorship-list li {
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .mentorship-list .research-title {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+
+    /* ==========================================================================
+   SECTION: GALLERY
+   ========================================================================== */
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .gallery-item {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background-color: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      object-fit: cover;
+    }
+
+    /* ==========================================================================
+   SECTION: CONTACT
+   ========================================================================== */
+
+    #contact a {
+      color: #0056b3;
+      border-bottom: none;
+    }
+
+    #contact a:hover {
+      color: #003366;
+      border-bottom-color: transparent;
+    }
+
+    /* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+    footer {
+      max-width: var(--max);
+      margin: 0 auto;
+      width: 100%;
+      padding: 0 40px 48px 40px;
+      font-size: .82rem;
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer a {
+      color: var(--ink-soft);
+    }
+
+    @media (max-width: 899px) {
+      footer {
+        padding: 0 16px 40px;
+      }
+    }
+
+    /* Bioinformatics Tutorials: grouped one-line links */
+    .tutorial-group + .tutorial-group {
+      margin-top: 20px;
+    }
+
+    .tutorial-group h3 {
+      font-size: 1.15rem;
+      font-variant: small-caps;
+      letter-spacing: .03em;
+      margin-bottom: 8px;
+    }
+
+    .tutorial-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .tutorial-links li {
+      margin-bottom: 6px;
+    }
+
+    .tutorial-links a {
+      color: var(--rust);
+      font-style: normal;
+    }
+
+    .tutorial-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* links inside blog posts and tutorials use the site's blue, upright */
+    .blog-content a {
+      color: var(--rust);
+      font-style: normal;
+    }
+
+    .blog-content a:hover {
+      text-decoration: underline;
+    }
+
+    /* software lists in tutorials: tool names upright and bold */
+    .blog-content .tool-list li {
+      margin-bottom: 4px;
+    }
+
+    .blog-content .tool-list a {
+      color: var(--rust);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .blog-content .tool-list a:hover {
+      text-decoration: underline;
+    }
+
+    /* code in tutorials and blog posts */
+    .blog-content pre {
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 12px 14px;
+      overflow-x: auto;
+      font-size: .85rem;
+      line-height: 1.5;
+      margin: 0 0 1.2em;
+    }
+
+    .blog-content code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .9em;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--ink-soft);
+    }
+
+    .back-link::before {
+      content: "←";
+      margin-right: 8px;
+    }
+
+    .back-link:hover {
+      color: var(--teal-deep);
+    }
+
+    .blog-header {
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .blog-date {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--rust);
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .blog-header h1 {
+      font-size: 2.2rem;
+      line-height: 1.2;
+      color: var(--heading);
+      margin: 0;
+    }
+
+    .blog-content p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 1.2em;
+      color: var(--ink);
+      text-align: justify;
+    }
+
+    .blog-content h2 {
+      font-size: 1.5rem;
+      margin-top: 1.5em;
+      margin-bottom: 0.8em;
+    }
+
+    .blog-content h3 {
+      font-size: 1.2rem;
+      margin-top: 1.2em;
+      margin-bottom: 0.6em;
+    }
+
+    .blog-content ul {
+      padding-left: 20px;
+      margin-bottom: 1.2em;
+      font-size: 1.05rem;
+    }
+
+    .blog-content li {
+      margin-bottom: 8px;
+    }
+
+    .blog-content img {
+      max-width: 100%;
+      border-radius: 4px;
+      border: 1px solid var(--line);
+      margin: 16px 0;
+    }
+
+    /* Blog Standalone Styles */
+    .blog-standalone-header {
+      background: var(--header-bg);
+      padding: 16px;
+      color: var(--header-ink);
+      text-align: center;
+      border-bottom: 1px solid var(--header-bg-dark);
+    }
+
+    .blog-standalone-header h1 {
+      font-size: 1.4rem;
+      color: var(--header-ink);
+      margin-bottom: 4px;
+      border: none;
+      padding: 0;
+    }
+
+    .blog-standalone-header a {
+      color: var(--header-ink-soft);
+      font-size: 0.9rem;
+      text-decoration: none;
+      border: none;
+      font-style: normal;
+    }
+
+    .blog-standalone-header a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .blog-standalone-main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="home-view">
+    <!-- ============ LEFT SIDEBAR HEADER ============ -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="header-top">
+          <div class="identity">
+            <div>
+              <h1>Rana Sheraz Ahmad</h1>
+              <div class="role">Research Associate</div>
+              <div class="affil">Lahore University of Management Sciences (LUMS), Lahore, PK</div>
+            </div>
+          </div>
+
+          <ul class="contact-list-inline">
+            <li><span class="glyph">@</span><a href="mailto:ranasheraz.202101902@gcuf.edu.pk">Email</a></li>
+            <li><span class="glyph">gh</span><a href="https://github.com/SherazAhmadd">GitHub</a></li>
+            <li><span class="glyph">in</span><a href="https://www.linkedin.com/in/sherazahmadd/">LinkedIn</a></li>
+            <li><span class="glyph">sc</span><a
+                href="https://scholar.google.com/citations?user=wmPI3XYAAAAJ&hl=en">Google
+                Scholar</a></li>
+          </ul>
+
+          <nav class="side-nav" aria-label="Section navigation">
+            <ul>
+              <li><a href="#about">About</a></li>
+              <li><a href="#research">Research</a></li>
+              <li><a href="#publications">Publications</a></li>
+              <li><a href="#experience">Experience</a></li>
+              <li><a href="#teaching">Teaching</a></li>
+              <li><a href="#honours">Honours</a></li>
+              <li><a href="#memberships">Memberships</a></li>
+              <li><a href="#mentorship">Mentorship</a></li>
+              <li><a href="#tutorials">Tutorials</a></li>
+              <li><a href="#science-blogs">Science Blogs</a></li>
+              <li><a href="#gallery">Gallery</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ MAIN CONTENT AREA ============ -->
+    <div class="page-content-wrapper">
+
+      <!-- ============ MAIN ============ -->
+      <main>
+
+        <section id="about">
+          <h2 class="about-heading-row">
+            <img class="hero-emblem" src="assets/batman.png">
+            <span>About Me (Gotham City needs more Researchers! *-* )</span>
+          </h2>
+          <div class="about-container">
+            <div class="about-text">
+              <p class="lede">Yooo! This is Sheraz. I am a Research Associate at the <a
+                  href="https://sbasse.lums.edu.pk/"><em>Syed Babar Ali School of Science and Engineering
+                    (SBASSE)</em></a>,
+                <a href="https://www.lums.edu.pk/"><em>Lahore University of Management Sciences (LUMS)</em></a>.
+                Alongside this, I also work as a Remote Research Assistant with the joint <a
+                  href="https://www.chalmers.se/en/departments/cse/"><em>Department of Computer Science and
+                    Engineering</em></a>
+                at <a href="https://www.chalmers.se/en/"><em>Chalmers University of Technology</em></a> and the <a
+                  href="https://www.gu.se/en"><em>University of Gothenburg</em></a>, Sweden.
+
+                I earned my Bachelor of
+                Science in Bioinformatics from <a href="https://gcuf.azurewebsites.net/"><em>Government College
+                    University
+                    Faisalabad</em></a> in 2025.
+
+              </p>
+              <p>Before joining LUMS, I spent two years as a Research Assistant in the Integrative Omics and Molecular
+                Modelling Lab at GCUF.
+                I also served as a Remote Research Assistant in the <a
+                  href="https://sunwayuniversity.edu.my/faculty-of-medical-and-life-sciences"><i>Department of
+                    Biomedical
+                    Sciences</i></a> at <a href="https://sunwayuniversity.edu.my/"><em>Sunway University</em></a>,
+                Malaysia.
+                I believe we do better science when we stop working in silos and start sharing what we know. So far, I
+                have contributed to five research articles, including first-author papers in Q1 journals. </p>
+              <p>Outside research, I’m into sports, philosophy, video games, finance, and anything that makes me think
+                differently.
+
+                Most of my free time goes to friends, walks around campus, reading about something that has nothing to
+                do
+                with my work, and occasional cleaning my room. I suppose I'm just as drawn to asking the right question
+                as
+                finding its answer. If there's a philosophy behind it: better to be a <strong><em>jack of all trades,
+                    master of something.</em></strong></p>
+
+              <div class="about-news">
+                <h3>News/خبریں</h3>
+                <div class="news-list">
+                <div class="news-item">
+                  <time>Sep 2026</time>
+                  <div>Participated in the AI for Biomolecules Symposium, “What Proteins Do and How to Predict It,”
+                    featuring
+                    a keynote by Dr. Robert Hoehndorf (KAUST), organized by the SIB AI for Biomolecules Focus Group,
+                    Switzerland.</div>
+                </div>
+                <div class="news-item">
+                  <time>Sep 2026</time>
+                  <div>Joined as a Research Associate at the Syed Babar Ali School of Science and Engineering, Lahore
+                    University of Management Sciences (LUMS).</div>
+                </div>
+                <div class="news-item">
+                  <time>Jul 2026</time>
+                  <div>Began a remote research assistantship at Chalmers University of Technology, focusing on building
+                    language-model embeddings for prokaryotic genomes.</div>
+                </div>
+                <div class="news-item">
+                  <time>May 2026</time>
+                  <div>Our first-author research on <strong>XtractPAV</strong>, an automated pipeline for detecting
+                    presence–absence variation across genomes, was published in <em>BMC Genomics</em>.</div>
+                </div>
+                </div>
+              </div>
+
+
+            </div>
+
+            <div class="about-visuals">
+              <img src="assets/Profile.jpg" alt="Rana Sheraz Ahmad" class="about-image-placeholder"
+                style="object-fit: cover;">
+
+              <div class="about-caption">
+                <div class="name">Rana Sheraz Ahmad /<br>رانا شیراز احمد</div>
+                <div class="status">Research Associate @ Lahore University of Management and Sciences (LUMS)</div>
+              </div>
+              <div class="social-icons">
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/in/sherazahmadd/" aria-label="LinkedIn"><svg viewBox="0 0 24 24">
+                    <path
+                      d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                  </svg></a>
+                <!-- Google Scholar (Mortarboard) -->
+                <a href="https://scholar.google.com/citations?user=wmPI3XYAAAAJ&hl=en" aria-label="Google Scholar"><svg
+                    viewBox="0 0 24 24">
+                    <path
+                      d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z" />
+                  </svg></a>
+                <!-- ORCID -->
+                <a href="https://orcid.org/0009-0006-9979-0904" aria-label="ORCID"><svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z" />
+                  </svg></a>
+                <!-- GitHub -->
+                <a href="https://github.com/SherazAhmadd" aria-label="GitHub"><svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                  </svg></a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="research">
+          <h2>Research Interest/تحقیقی دلچسپی</h2>
+          <div class="interest">
+            <p><strong>Genetic Architecture and Molecular Mechanisms of Complex Diseases.</strong> Studying genetic
+              variation, from single-nucleotide variants to large structural variants, to understand how it
+              contributes to human complex diseases. I combine statistical genetics and computational
+              genomics, including variant detection, association analysis, and functional interpretation of variants,
+              and I am particularly interested in how risk variants identified at the population level translate into
+              altered gene function and disease biology.</p>
+          </div>
+          <div class="interest">
+            <p><strong>Multi-Omics Integration and Biomarker Discovery.</strong> Integrating genomic, transcriptomic,
+              epigenomic, and clinical data to identify robust and interpretable biomarkers of disease risk and
+              progression. I am interested in statistical and machine-learning frameworks that combine heterogeneous
+              data layers while remaining explainable, and in how biomarkers discovered computationally can be
+              validated and translated into mechanistic understanding of disease pathways and clinically actionable
+              tools for early diagnosis, risk stratification, and treatment response prediction.</p>
+          </div>
+          <div class="interest">
+            <p><strong>Bioinformatics Tool Development and Genomic Foundation Models.</strong> As sequencing data
+              grow in size and complexity, reliable bioinformatics tools and pipelines are essential for turning raw
+              data into reproducible biological insight. I design and develop scalable, well-documented tools and
+              workflows that automate genome analysis and make complex methods accessible to the wider research
+              community. I also use genomic foundation models to learn sequence representations that capture
+              functional and evolutionary signals for downstream genomic prediction tasks.</p>
+          </div>
+        </section>
+
+
+        <section id="publications">
+          <h2>Publications/اشاعتیں</h2>
+
+          <div class="pubs-subhead">Papers/Articles</div>
+          * denotes corresponding author. Author name in <strong>bold</strong>
+          <ul class="pub-list">
+            <li class="pub">
+              <div class="pub-row">
+                <img class="pub-cover" src="assets/BMC_Genomics.jpg" alt="BMC Genomics Cover">
+                <div class="pub-body">
+                  <a class="pub-title-link" href="https://doi.org/10.1186/s12864-026-12909-2" target="_blank">XtractPAV:
+                    An Automated Pipeline for Identifying Presence–Absence Variations across Multiple Genomes</a>
+                  <p class="pub-citation">
+                    <strong>Rana Sheraz Ahmad</strong>, Muhammad Sadaqat, Muhammad Tahir-ul-Qamar*, Khalid S.
+                    Allemailem, Nagwan A.
+                    Alzunaidy | <em>(Published in BMC Genomics)</em> <a class="doi-link"
+                      href="https://doi.org/10.1186/s12864-026-12909-2">doi:10.1186/s12864-026-12909-2</a>
+                  </p>
+
+                  <!-- Wrapper to keep abstract button and links on the same line -->
+                  <div class="pub-controls">
+                    <button class="abstract-toggle" type="button" aria-expanded="false" aria-controls="abs-1">
+                      <span class="caret">▸</span><span class="label">Abstract</span>
+                    </button>
+
+                    <div class="pub-links">
+                      <a href="https://github.com/SherazAhmadd/XtractPAV">Code Repository (GitHub)</a>
+                      <a href="https://doi.org/10.5281/zenodo.16884341">Zenodo</a>
+                    </div>
+                  </div>
+
+                  <!-- Abstract Panel Start -->
+                  <div class="abstract-panel" id="abs-1" hidden>
+                    <div class="abstract-text">
+                      Presence-absence variations (PAVs) significantly influence phenotypic diversity across and within
+                      species by modulating functional modules associated with stress responsiveness, adaptation, and
+                      developmental processes. This modulation ultimately contributes to genetic diversity at both
+                      inter-
+                      and intra-species levels. However, existing tools available for detecting PAVs in assembled
+                      genomes
+                      possess limitations that hinder comprehensive analyses. These limitations include the absence of
+                      scalable workflows for multi-genome analysis, the imposition of stringent parameters regarding
+                      coverage, PAV length, and sequence identity, as well as the frequent necessity for manual
+                      integration. To address these challenges, we developed XtractPAV, an end-to-end pipeline that
+                      automates the extraction, annotation, and interactive visualization of PAVs across assembled
+                      genomes. XtractPAV was evaluated using assembled genomes from both eukaryotic and prokaryotic
+                      organisms, including Pyrus communis, Arabidopsis thaliana, Mus musculus, and Salmonella enterica,
+                      to
+                      assess its capability to detect presence-absence variations across diverse species. The
+                      performance
+                      of XtractPAV was benchmarked against other established pipelines, demonstrating an optimized
+                      workflow that allows comprehensive extraction and annotation of PAVs. To further validate PAVs,
+                      representative XtractPAV-identified PAVs in A. thaliana and P. communis were independently
+                      confirmed
+                      using WGS paired-end read mapping, demonstrating consistent query-specific insertion and deletion
+                      signatures at predicted loci in the reference genome. Notably, the pipeline successfully
+                      identified
+                      PAVs from the reference set and also revealed novel PAV regions overlapping with genes.
+                      Furthermore,
+                      the automated report generation feature of XtractPAV produces publication-ready summaries of PAV
+                      distributions alongside diverse interactive figures. The XtractPAV webpage is available at its
+                      project page.
+                    </div>
+                  </div>
+                  <!-- Abstract Panel End -->
+
+                </div>
+              </div>
+            </li>
+
+            <li class="pub">
+              <div class="pub-row">
+                <img class="pub-cover" src="assets/reports.jpg" alt="SR">
+                <div class="pub-body">
+                  <a class="pub-title-link" href="https://doi.org/10.64898/2026.02.03.703467" target="_blank">BioVix: An
+                    Integrated Large Language Model Framework for Data Visualization, Graph Interpretation, and
+                    Literature-Aware Scientific Validation</a>
+                  <p class="pub-citation">Muhammad Zain Butt, <strong>Rana Sheraz Ahmad</strong>, Emaan Fatima, Muhammad
+                    Tahir-ul-Qamar* | <em>Scientific Reports</em> (Under review) <a class="doi-link"
+                      href="https://doi.org/10.64898/2026.02.03.703467">doi:10.64898/2026.02.03.703467</a></p>
+
+                  <div class="pub-controls">
+                    <button class="abstract-toggle" type="button" aria-expanded="false" aria-controls="abs-2"><span
+                        class="caret">▸</span><span class="label">Abstract</span></button>
+                    <div class="pub-links">
+                      <a href="https://www.biorxiv.org/content/10.64898/2026.02.03.703467v1">BioRXiv Preprint</a>
+                      <a href="https://github.com/MuhammadZain-Butt/BioVix">Code Repository (GitHub)</a>
+                      <a href="https://huggingface.co/spaces/MuhammadZain10/BioVix">Deployment</a>
+                    </div>
+                  </div>
+
+                  <div class="abstract-panel" id="abs-2" hidden>
+                    <div class="abstract-text">The application of Large Language Models (LLMs) for generating data
+                      visualizations through natural language interaction represents a promising advance in AI-assisted
+                      scientific analysis. However, existing LLM-based tools largely emphasize graph generation, while
+                      research workflows require not only visualization but also rigorous interpretation and validation
+                      against established scholarly evidence. Despite advances in visualization technologies, no single
+                      tool currently integrates literature references with visualization while also generating insights
+                      from graphical data. To address this gap, we present BioVix, a web-based LLM-driven framework that
+                      integrates interactive data visualization, natural-language querying, and automated retrieval of
+                      relevant academic literature. BioVix enables users to upload datasets, generate complex
+                      visualizations, interpret graphical patterns, and contextualize findings through literature
+                      references within a unified workflow. The system employs a multi-model architecture combining
+                      DeepSeek V3.1 for code and logic generation, Qwen2.5-VL-32B-Instruct for multimodal
+                      interpretation,
+                      and GPT-OSS-20B for conversational reasoning, coordinated through structured prompt engineering.
+                      BioVix was evaluated across diverse biological domains, including proteomic expression profiling,
+                      epigenomic peak annotation, and clinical diabetes data, demonstrating its flexibility in handling
+                      heterogeneous datasets and supporting exploratory, literature-aware analysis. While BioVix
+                      substantially streamlines exploratory research workflows, its LLM-generated outputs are intended
+                      to
+                      support, not replace, expert judgment, and users should independently verify results before
+                      scientific reporting.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li class="pub">
+              <div class="pub-row">
+                <img class="pub-cover" src="assets/bmcpb.jpg" alt="bmc">
+                <div class="pub-body">
+                  <a class="pub-title-link" href="#">Genome-Wide Identification, Evolutionary Dynamics, and Functional
+                    Insights of LTR Retrotransposons in Three Mango (<em>Mangifera indica</em>) Cultivars</a>
+                  <p class="pub-citation">Muhammad Sadaqat, <strong>Rana Sheraz Ahmad</strong>, Muhammad Tahir-ul-Qamar*
+                    | <em>BMC Plant Biology</em> (Under review)
+                  </p>
+
+                  <div class="pub-controls">
+                    <button class="abstract-toggle" type="button" aria-expanded="false" aria-controls="abs-3"><span
+                        class="caret">▸</span><span class="label">Abstract</span></button>
+                    <div class="pub-links">
+                      <a href="https://github.com/sadaqat17/PlantLTR-Scan">Code Repository (GitHub)</a>
+                      <a href="https://doi.org/10.5281/zenodo.16884341">Zenodo</a>
+                    </div>
+                  </div>
+
+                  <div class="abstract-panel" id="abs-3" hidden>
+                    <div class="abstract-text">Long terminal repeat retrotransposons (LTR-RTs) are a major class of
+                      transposable elements in plant genomes, influencing genome size, structure, and evolution. To gain
+                      insights into their diversity and evolutionary significance in mango, we analyzed the genomes of
+                      three cultivars, including Alphonso, Hong Xiang Ya, and Tommy Atkins, using the PlantLTR-Scan
+                      pipeline developed in this study, which integrates LTR-RTs detection, classification, insertion
+                      time
+                      estimation, phylogenetic analysis, and functional annotations of gene-inserted LTR-RTs. Through
+                      this
+                      pipeline, a total of 970, 889, and 633 intact LTR-RTs were identified in the three cultivars,
+                      respectively. Superfamily-level classification revealed a higher abundance of Copia elements
+                      compared to Gypsy, although Gypsy elements were significantly larger. Clade-level analysis showed
+                      Ivana and Ale as the dominant Copia families, while Reina and Tekay predominated among Gypsy
+                      elements, with notable cultivar-specific variation. Insertion time estimation indicated that the
+                      major amplification burst occurred ~ 0.5 Mya, contributing to recent genome expansion. Functional
+                      analysis of gene-associated LTR-RTs demonstrated preferential accumulation in intronic regions,
+                      with
+                      enrichment of functions such as phosphorylation, DNA binding, ATP binding, and microtubule-based
+                      movement. Transcriptomic profiling revealed that Ivana (Copia) and Reina (Gypsy) families are
+                      transcriptionally active, suggesting their ongoing contribution to genome plasticity. Comparative
+                      analyses with other plant species further highlighted both conserved patterns, such as the larger
+                      size of Gypsy elements, and lineage-specific amplification trajectories in mango. Collectively,
+                      these findings demonstrate that LTR-RTs have shaped genome structure, contributed to functional
+                      diversity, and remain important drivers of genome evolution in mango cultivars.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li class="pub">
+              <div class="pub-row">
+                <img class="pub-cover" src="assets/rsc-advances.jpg" alt="RSC Advances Cover">
+                <div class="pub-body">
+                  <a class="pub-title-link" href="#">Integrative Pharmacogenomics Coupled with Machine Learning and
+                    Atomistic Simulations Identifies Repurposed Inhibitors of the KRAS G12D–MEK Oncogenic Cascade in
+                    Colorectal Cancer</a>
+                  <p class="pub-citation">Abbas Khan, Adel Ibrahim A Alalawy, Zainab Rehman, M.A. Sawali, <strong>Rana
+                      Sheraz Ahmad</strong>,
+                    Fahad M Almutairi, Abdul Wadood, Abdelali Agouni* | <em>RSC Advances</em>
+                    (Submitted).</p>
+
+                  <div class="pub-controls">
+                    <button class="abstract-toggle" type="button" aria-expanded="false" aria-controls="abs-4"><span
+                        class="caret">▸</span><span class="label">Abstract</span></button>
+                    <div class="pub-links">
+                      <a
+                        href="https://github.com/Abbas24-AI/Pharmacogenomics-and-ML-identify-KRAS-G12D-MEK-inhibitors-in-colorectal-cancer">Code
+                        Repository (GitHub)</a>
+                    </div>
+                  </div>
+
+                  <div class="abstract-panel" id="abs-4" hidden>
+                    <div class="abstract-text">Colorectal cancer (CRC) is among the most common and lethal malignancies
+                      worldwide, and KRAS G12D is its single most frequent oncogenic driver. By locking KRAS in its
+                      active, GTP-bound state, G12D sustains MAPK/ERK and PI3K/AKT signalling and limits the efficacy of
+                      MEK-directed therapy; yet the shallow surface of KRAS G12D and its picomolar nucleotide affinity
+                      have left it largely undruggable. Here we present an integrative
+                      pharmacogenomics–machine-learning–simulation pipeline to prioritise new chemical matter against
+                      the
+                      KRAS G12D–MEK axis. KRAS expression and drug-response profiles from CCLE and GDSC were integrated
+                      across CRC cell lines to anchor the analysis to clinically used MAPK-pathway inhibitors, with
+                      Selumetinib chosen as a structurally and pharmacologically characterised MEK reference. A curated
+                      set of 6,249 ChEMBL bioactive was classified by pIC₅₀ and screened with three supervised models;
+                      the
+                      random-forest classifier performed best (AUC 0.875) and, combined with Tanimoto similarity to
+                      Selumetinib, nominated the top KRAS- and MEK-directed candidates. Consensus docking across Glide,
+                      Smina and GNINA cross-checked by GNINA CNN pose scores—prioritised seven KRAS G12D and ten MEK
+                      binders, which were advanced to triplicate 100 ns all-atom molecular dynamics (Desmond/OPLS4) and
+                      MM-GBSA analysis. Against KRAS G12D, CHEMBL5268860 and CHEMBL5271053 retained
+                      near-crystallographic
+                      poses (ligand RMSD < 0.55 Å), preserved domain compactness, and achieved the most favourable
+                        MM-GBSA scores (−94.6 and −94.4 kcal/mol vs −57.1 for the co-crystallised ligand). For MEK1,
+                        CHEMBL3964315 and CHEMBL3918375 matched the reference in backbone and fluctuation stability
+                        while improving MM-GBSA by 7.6–8.1 kcal/mol. These compounds represent mechanistically grounded
+                        starting points for experimental validation in KRAS G12D-mutant CRC. </div>
+                    </div>
+                  </div>
+                </div>
+            </li>
+
+            <li class="pub">
+              <div class="pub-row">
+                <img class="pub-cover" src="assets/CMPB.jpg" alt="Computer Methods and Programs in Biomedicine Cover">
+                <div class="pub-body">
+                  <a class="pub-title-link" href="#">Explainable Machine Learning for Early Prediction of Gestational
+                    Diabetes Mellitus Using Clinical and Hematological Features</a>
+                  <p class="pub-citation">Tahreem Sajjad, <strong>Rana Sheraz Ahmad</strong>, Maha Yousaf, Mariam Laraib Amir,
+                    Muhammad Zain Butt, Muhammad Tahir-ul-Qamar*, Tamim Alkhalifah | <em>Computer Methods and Programs in
+                    Biomedicine</em> (In Preparation).
+                  </p>
+
+                  <div class="pub-controls">
+                    <button class="abstract-toggle" type="button" aria-expanded="false" aria-controls="abs-new"><span
+                        class="caret">▸</span><span class="label">Abstract</span></button>
+                    <div class="pub-links">
+                      <a href="https://github.com/sajjadtahreem/Glunova-AI">Code Repository (GitHub)</a>
+                      <a href="https://glunova-ai-kd3yaudsmdu99f5en39qxf.streamlit.app/">Deployment</a>
+                    </div>
+                  </div>
+
+                  <div class="abstract-panel" id="abs-new" hidden>
+                    <div class="abstract-text">
+                      <!-- Abstract content goes here -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section id="experience">
+          <h2>Research Appointments / تحقیقی تقرریاں</h2>
+
+          <div class="entry">
+            <div class="when">Sep 2026 – Present</div>
+            <div>
+              <div style="font-weight: 700; color: var(--heading); margin-bottom: 2px;">Research Associate</div>
+              <div style="color: var(--ink); font-size: 1rem;">Lahore University of Management Sciences (LUMS), PK
+              </div>
+            </div>
+          </div>
+
+          <div class="entry">
+            <div class="when">Aug 2026 – Present</div>
+            <div>
+              <div style="font-weight: 700; color: var(--heading); margin-bottom: 2px;">Research Assistant (Remote)
+              </div>
+              <div style="color: var(--ink); font-size: 1rem;">Department of Computer Science at Chalmers University
+                of
+                Technology and University of Gothenburg, SE</div>
+            </div>
+          </div>
+
+          <div class="entry">
+            <div class="when">Jun 2024 – Aug 2026</div>
+            <div>
+              <div style="font-weight: 700; color: var(--heading); margin-bottom: 2px;">Research Assistant</div>
+              <div style="color: var(--ink); font-size: 1rem;">Integrative Omics and Molecular Modelling Lab (IOMM),
+                Government College University Faisalabad, PK</div>
+            </div>
+          </div>
+
+          <div class="entry">
+            <div class="when">Apr 2025 – Nov 2025</div>
+            <div>
+              <div style="font-weight: 700; color: var(--heading); margin-bottom: 2px;">Research Assistant (Remote)
+              </div>
+              <div style="color: var(--ink); font-size: 1rem;">Department of Biomedical Sciences, Sunway University,
+                MY
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="teaching">
+          <h2>Teaching/تدریس</h2>
+
+          <div class="teaching-role">
+            Undergraduate Teaching Assistant, GCUF
+          </div>
+
+          <ul class="teaching-list">
+            <li>CSI-522: Bioinformatics Software Development-I (Fall 2024)</li>
+          </ul>
+        </section>
+
+        <section id="honours">
+          <h2>Awards &amp; Honours/اعزازات و امتیازات</h2>
+
+          <ul class="awards-list">
+            <li><strong>Invited Lead Trainer</strong> | From Research to Code: Bioinformatics Summer Internship,
+              Department of Bioinformatics and Biotechnology, GCUF</li>
+            <li><strong>Academic Excellence, B.S. Bioinformatics</strong>, Government College University Faisalabad
+              (2025).</li>
+          </ul>
+        </section>
+
+        <section id="memberships">
+          <h2>Academic Memberships/علمی رکنیت</h2>
+          <p>Active participant in global computational biology and bioinformatics communities.</p>
+
+          <div class="logo-grid">
+            <div class="logo-item">
+              <img class="logo-img" src="assets/obf.png" alt="OBF Logo">
+              <span class="logo-title">Open Bioinformatics Foundation</span>
+            </div>
+            <div class="logo-item">
+              <img class="logo-img rect" src="assets/icp.jpg" alt="ICPGC Logo">
+              <span class="logo-title">ICPGC</span>
+            </div>
+            <div class="logo-item">
+              <img class="logo-img" src="assets/isb.png" alt="IAENG Logo">
+              <span class="logo-title">IAENG Society of Bioinformatics</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="mentorship">
+          <h2>Mentored Students/طلبہ کی رہنمائی کی</h2>
+
+
+          <div class="mentorship-role">
+            Undergraduate Research Mentee
+          </div>
+
+          <ul class="mentorship-list">
+            <li>
+              <strong>Muhammad Zain Butt</strong>, Bioinformatics B.S. Student, GCUF (2026)
+              <div class="thesis-title">Thesis Title: <em>BioVix: An Integrated Large Language Model Framework for Data
+                  Visualization, Graph Interpretation, and Literature-Aware Scientific Validation</em></div>
+            </li>
+            <li>
+              <strong>Tehreem Sajid</strong>, Bioinformatics B.S. Student, GCUF (2025)
+              <div class="thesis-title">Thesis Title: <em>An Explainable AI Framework for Early Prediction of
+                  Gestational
+                  Diabetes Mellitus Using Clinical, Hematological, and Demographic Biomarkers in Pakistani Women</em>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section id="tutorials">
+          <h2>Bioinformatics Tutorials/بائیو انفارمیٹکس اسباق</h2>
+          <p>Hands-on walkthroughs of the methods and workflows I use in statistical genetics and computational genomics.</p>
+          <div id="tutorial-list">
+            <!-- Generated by JavaScript from #tutorial-database at the bottom of this file -->
+          </div>
+        </section>
+
+        <section id="science-blogs">
+          <h2>Science Blogs/سائنسی تحریرات</h2>
+          <p>Thoughts and insights on computational biology, bioinformatics, and my research journey.</p>
+
+          <ul class="flat-list" id="blog-list">
+            <!-- The blog list will be auto-generated here by JavaScript -->
+          </ul>
+        </section>
+
+        <section id="gallery">
+          <h2>Gallery/تصاویر</h2>
+          <p>Highlights from conferences, laboratory work, and academic events.</p>
+
+          <div class="gallery-grid">
+            <img
+              src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23ececec'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%23565f5a'>Image Placeholder</text></svg>"
+              alt="Lab presentation" class="gallery-item" />
+            <img
+              src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23ececec'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%23565f5a'>Image Placeholder</text></svg>"
+              alt="Conference poster" class="gallery-item" />
+            <img
+              src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23ececec'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%23565f5a'>Image Placeholder</text></svg>"
+              alt="Group research meeting" class="gallery-item" />
+          </div>
+        </section>
+
+        <section id="contact" style="border-bottom:none; padding-bottom: 24px; margin-bottom: 0;">
+          <h2>Get in touch/رابطہ کریں</h2>
+          <p>I'm always glad to hear from people working on Computational Biology, Complex Human Diseases, Comparative
+            Genomics, and Solving Biological problems through developing Bioinformatics tools/pipelines. Reach me at:</p>
+          <ul class="contact-emails">
+            <li><a href="mailto:rana.a@lums.edu.pk">rana.a@lums.edu.pk</a></li>
+            <li><a href="mailto:ranasheraz.202101902@gcuf.edu.pk">ranasheraz.202101902@gcuf.edu.pk</a></li>
+            <li><a href="mailto:rahma022@ucr.edu">rahma022@ucr.edu</a></li>
+          </ul>
+        </section>
+
+      </main>
+
+
+
+
+    </div>
+  </div> <!-- end home-view -->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      const links = Array.from(document.querySelectorAll('.top-nav a'));
+      const sections = links
+        .map(a => document.querySelector(a.getAttribute('href')))
+        .filter(Boolean);
+
+      const setActive = () => {
+        let current = sections[0];
+        const y = window.scrollY + 140;
+        for (const sec of sections) {
+          if (sec.offsetTop <= y) current = sec;
+        }
+        links.forEach(a => a.classList.remove('active'));
+        const activeLink = links.find(a => a.getAttribute('href') === '#' + current.id);
+        if (activeLink) activeLink.classList.add('active');
+      };
+
+      document.addEventListener('scroll', setActive, { passive: true });
+      setActive();
+
+      const about = document.getElementById('about');
+      const fitFirstScreen = () => {
+        if (!about) return;
+        about.style.minHeight = '';
+        const spaceAbove = about.getBoundingClientRect().top + window.scrollY;
+        const available = window.innerHeight - spaceAbove;
+        about.style.minHeight = Math.max(available, 320) + 'px';
+      };
+      fitFirstScreen();
+      window.addEventListener('resize', fitFirstScreen);
+      window.addEventListener('load', fitFirstScreen);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(fitFirstScreen);
+      }
+
+      document.querySelectorAll('.abstract-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const panel = document.getElementById(btn.getAttribute('aria-controls'));
+          const expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+          if (panel) panel.hidden = expanded;
+          btn.querySelector('.label').textContent = expanded ? 'Abstract' : 'Hide abstract';
+        });
+      });
+
+      // ================= BLOG SPA LOGIC =================
+      const blogList = document.getElementById('blog-list');
+      const blogDatabase = document.getElementById('blog-database');
+      const homeView = document.getElementById('home-view');
+      const blogReadView = document.getElementById('blog-read-view');
+      const blogContentContainer = document.getElementById('blog-content-container');
+
+      if (blogDatabase && blogList) {
+        const articles = blogDatabase.querySelectorAll('article');
+        blogList.innerHTML = ''; // clear initial
+        articles.forEach(article => {
+          const id = article.id;
+          const title = article.getAttribute('data-title');
+          const date = article.getAttribute('data-date');
+          const desc = article.getAttribute('data-desc');
+
+          blogList.innerHTML += `
+            <li>
+              <div class="when">${date}</div>
+              <div>
+                <strong><a href="#blog-${id}">${title}</a></strong>
+                <span class="sub">${desc}</span>
+              </div>
+            </li>
+          `;
+        });
+      }
+
+      // ================= TUTORIALS (same reading view as the blog) =================
+      const tutorialList = document.getElementById('tutorial-list');
+      const tutorialDatabase = document.getElementById('tutorial-database');
+      if (tutorialDatabase && tutorialList) {
+        const groups = new Map();
+        tutorialDatabase.querySelectorAll('article').forEach(article => {
+          const group = article.getAttribute('data-group') || 'Tutorials';
+          if (!groups.has(group)) groups.set(group, []);
+          groups.get(group).push(`<li><a href="#tutorial-${article.id}">${article.getAttribute('data-title')}</a></li>`);
+        });
+        tutorialList.innerHTML = [...groups].map(([group, items]) =>
+          `<div class="tutorial-group"><h3>${group}</h3><ul class="tutorial-links">${items.join('')}</ul></div>`).join('');
+      }
+
+      const backLink = blogReadView ? blogReadView.querySelector('.back-link') : null;
+      const homeLink = blogReadView ? blogReadView.querySelector('.blog-standalone-header a') : null;
+      const setBack = (hash, label) => {
+        if (backLink) { backLink.href = hash; backLink.textContent = label; }
+        if (homeLink) homeLink.href = hash;
+      };
+
+      const handleRoute = () => {
+        const hash = window.location.hash;
+        if (hash.startsWith('#tutorial-')) {
+          const article = tutorialDatabase && tutorialDatabase.querySelector('#' + CSS.escape(hash.replace('#tutorial-', '')));
+          if (article) {
+            homeView.style.display = 'none';
+            blogReadView.style.display = 'block';
+            setBack('#tutorials', 'Back to Bioinformatics Tutorials');
+            blogContentContainer.innerHTML = `
+              <header class="blog-header">
+                 <h1>${article.getAttribute('data-title')}</h1>
+              </header>
+              <section style="border:none; padding:0; margin:0;">
+                ${article.innerHTML}
+              </section>
+            `;
+            window.scrollTo(0, 0);
+          }
+        } else if (hash.startsWith('#blog-')) {
+          setBack('#science-blogs', 'Back to Science Blogs');
+          const blogId = hash.replace('#blog-', '');
+          const article = document.getElementById(blogId);
+          if (article) {
+            homeView.style.display = 'none';
+            blogReadView.style.display = 'block';
+
+            const title = article.getAttribute('data-title');
+            const date = article.getAttribute('data-date');
+
+            blogContentContainer.innerHTML = `
+              <header class="blog-header">
+                 <span class="blog-date">${date}</span>
+                 <h1>${title}</h1>
+              </header>
+              <section style="border:none; padding:0; margin:0;">
+                ${article.innerHTML}
+              </section>
+            `;
+            window.scrollTo(0, 0);
+          }
+        } else {
+          homeView.style.display = 'block';
+          blogReadView.style.display = 'none';
+
+          if (hash && hash !== '#science-blogs') {
+            setTimeout(() => {
+              const el = document.querySelector(hash);
+              if (el) el.scrollIntoView();
+            }, 10);
+          }
+        }
+      };
+
+      window.addEventListener('hashchange', handleRoute);
+      handleRoute();
+    });
+  </script>
+
+  <!-- ============ BLOG READING VIEW ============ -->
+  <div id="blog-read-view" style="display: none; width: 100%; flex: 1;">
+    <header class="blog-standalone-header">
+      <h1>
+        <a href="#science-blogs"
+          style="color: inherit; text-decoration: none; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px;">
+          <img src="assets/batman.png" alt="Batman logo" style="height: 28px; width: auto;">
+          Rana Sheraz Ahmad
+        </a>
+      </h1>
+    </header>
+    <main class="blog-standalone-main">
+      <a href="#science-blogs" class="back-link">Back to Science Blogs</a>
+      <article class="blog-content" id="blog-content-container">
+        <!-- Blog content injected here -->
+      </article>
+    </main>
+
+  </div>
+
+  <!-- ============ BIOINFORMATICS TUTORIALS DATABASE ============ -->
+  <!-- To add a tutorial, copy an <article> block: give it a unique id, a data-title (the link text) and a
+       data-group (the heading it is listed under, e.g. "Computational Genomics"). -->
+  <div id="tutorial-database" style="display: none;">
+
+    <article id="plink-data-format" data-title="PLINK binary genotype format: .bed/.bim/.fam" data-group="Statistical Genetics">
+      <p>PLINK format, in particular the bed/fam/bim bundle for genotype data, is one of the most popular formats to
+        store genotype information, among a couple of others such as VCF (and derivatives from it) and bgen.</p>
+      <p>PLINK is like a Swiss army knife for statistical genetics: it does lots of extremely useful routine data
+        analysis, particularly data cleaning and exploratory analysis. That's why it is easy to start an analysis in
+        PLINK format in order to use features offered in PLINK to understand the basics of data.</p>
+      <p>I think a general approach in learning (maybe anything) is to unbox the black box through looking at some
+        simple examples. My suggestion is, try to install the <code>snpStats</code> package in R and use this
+        function:</p>
+      <p><a href="https://www.rdocumentation.org/packages/snpStats/versions/1.22.0/topics/read.plink">https://www.rdocumentation.org/packages/snpStats/versions/1.22.0/topics/read.plink</a></p>
+      <p>on a small data-set here:</p>
+      <p><a href="https://github.com/statgenetics/orientation/tree/main/data/LMM_MWE">https://github.com/statgenetics/orientation/tree/main/data/LMM_MWE</a></p>
+      <p>the <code>genotype21_22</code> data bundle. See in R what you get!</p>
+      <p>In essence, the <code>fam</code> file contains sample information and the <code>bim</code> file contains
+        variant information, both in plain text format that you can open with a text editor (in case you did not
+        realize!). They only have a few columns, so they should be easy to understand if you look at the PLINK
+        documentation. The <code>bed</code> file is a sample-by-variant matrix of genotypes, but saved in binary
+        format, which may look like a black box. That's why I suggested loading it with tools such as the
+        aforementioned R package to look into it.</p>
+      <p>I would also like to point out that PLINK has a few types of file bundles. Most popular are bed/bim/fam (best
+        compression, with bed being a binary file) and ped/map (pure text format, stemmed from the traditional LINKAGE
+        analysis software input). These bundles contain the same information and can be converted between each other
+        using PLINK.</p>
+    </article>
+
+    <article id="allele-qc-merging" data-title="Allele harmonization and strand QC for cross-cohort genotype merging"
+      data-group="Statistical Genetics">
+      <p>Genotype data from different arrays, labs or imputation runs rarely line up out of the box. The same SNP can
+        be on a different genome build, reported on the opposite strand, or have its alleles swapped. Merging without
+        checking these produces silent errors that later look like real association signals or population structure.
+        These are the checks I run, in order, before merging two datasets <code>A</code> and <code>B</code>.</p>
+
+      <h2>1. Same genome build</h2>
+      <p>Compare the positions of a few well-known SNPs (for example from dbSNP) in both datasets. If they differ, lift
+        one dataset over to the other build (GRCh37 ↔ GRCh38) with a tool such as CrossMap or
+        <code>bcftools +liftover</code> before anything else.</p>
+
+      <h2>2. Normalise against the reference genome</h2>
+      <p>Split multi-allelic sites, left-align indels, and make the REF allele match the reference genome, flipping
+        strand where needed and dropping sites that cannot be matched:</p>
+<pre><code>bcftools norm -m -any -f ref.fa A.vcf.gz -Oz -o A.norm.vcf.gz
+bcftools +fixref A.norm.vcf.gz -Oz -o A.fixref.vcf.gz -- -f ref.fa -m flip -d</code></pre>
+
+      <h2>3. Give every variant the same ID</h2>
+      <p>rsIDs differ between dbSNP versions, so use position and alleles as the ID in both datasets:</p>
+<pre><code>bcftools annotate --set-id '%CHROM:%POS:%REF:%FIRST_ALT' A.fixref.vcf.gz -Oz -o A.ids.vcf.gz</code></pre>
+
+      <h2>4. Remove strand-ambiguous SNPs</h2>
+      <p>A/T and C/G SNPs look the same on both strands, so a strand flip cannot be detected from the alleles alone.
+        Unless you can resolve them by allele frequency, drop them:</p>
+<pre><code>AMBIGUOUS='(REF="A" &amp;&amp; ALT="T") || (REF="T" &amp;&amp; ALT="A")'
+AMBIGUOUS="$AMBIGUOUS"' || (REF="C" &amp;&amp; ALT="G") || (REF="G" &amp;&amp; ALT="C")'
+bcftools view -e "$AMBIGUOUS" A.ids.vcf.gz -Oz -o A.qc.vcf.gz</code></pre>
+
+      <h2>5. Keep the shared variants and merge in PLINK</h2>
+<pre><code>plink --vcf A.qc.vcf.gz --make-bed --out A
+plink --vcf B.qc.vcf.gz --make-bed --out B
+cut -f2 A.bim | sort &gt; A.snps; cut -f2 B.bim | sort &gt; B.snps
+comm -12 A.snps B.snps &gt; shared.snps
+plink --bfile A --extract shared.snps --make-bed --out A.shared
+plink --bfile B --extract shared.snps --make-bed --out B.shared
+plink --bfile A.shared --bmerge B.shared --make-bed --out merged</code></pre>
+      <p>If the merge fails, PLINK writes the offending variants to <code>merged-merge.missnp</code>. Flip them in one
+        dataset and try again; whatever still fails is excluded:</p>
+<pre><code>plink --bfile B.shared --flip merged-merge.missnp --make-bed --out B.flip
+plink --bfile A.shared --bmerge B.flip --make-bed --out merged</code></pre>
+
+      <h2>6. Check allele frequencies</h2>
+      <p>For samples of similar ancestry, a variant whose frequency is very different between the two sources (as a
+        rule of thumb, more than 0.2) is more likely a strand or allele error than biology. Compare
+        <code>plink --freq</code> output from both datasets and remove such variants.</p>
+
+      <h2>7. Quality control after merging</h2>
+<pre><code>plink --bfile merged --geno 0.05 --mind 0.05 --maf 0.01 --hwe 1e-6 --make-bed --out merged.qc
+plink --bfile merged.qc --pca 10 --out merged.qc</code></pre>
+      <p>Plot the first principal components and colour the samples by source. If the datasets separate by source
+        rather than by ancestry, there is a batch effect left to fix.</p>
+    </article>
+
+    <article id="statgen-software-toolkit" data-title="Statistical genetics and NGS software toolkit"
+      data-group="Statistical Genetics">
+      <p>A reference list of the software commonly used in the lab, grouped by analysis step, from raw sequencing
+        reads to association, fine-mapping and post-GWAS analysis. Each name links to the tool's official page.</p>
+
+      <h2>Next-generation sequencing</h2>
+      <ul class="tool-list">
+        <li><a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">FastQC</a>: quality control for high-throughput sequence data.</li>
+        <li><a href="https://multiqc.info/">MultiQC</a>: aggregates QC reports from many samples and tools into one report.</li>
+        <li><a href="https://github.com/OpenGene/fastp">fastp</a>: fast adapter trimming, filtering and QC of FASTQ files.</li>
+        <li><a href="https://github.com/lh3/bwa">BWA</a>: alignment and mapping of short reads against a reference genome.</li>
+        <li><a href="https://github.com/bwa-mem2/bwa-mem2">bwa-mem2</a>: a faster, drop-in replacement for BWA-MEM.</li>
+        <li><a href="https://github.com/lh3/minimap2">minimap2</a>: alignment of long reads and genome assemblies.</li>
+        <li><a href="https://www.htslib.org/">samtools</a>: manipulation of sequence alignments in SAM/BAM/CRAM format.</li>
+        <li><a href="https://broadinstitute.github.io/picard/">Picard</a>: manipulating high-throughput sequencing data and formats.</li>
+        <li><a href="https://gatk.broadinstitute.org/">GATK</a>: variant discovery from sequence alignments in BAM format.</li>
+        <li><a href="https://github.com/google/deepvariant">DeepVariant</a>: deep-learning variant caller for short and long reads.</li>
+        <li><a href="https://vcftools.github.io/">VCFtools</a>: manipulation and summary statistics of VCF files.</li>
+        <li><a href="https://samtools.github.io/bcftools/">bcftools</a>: a faster replacement for VCFtools that also calls variants.</li>
+        <li><a href="https://www.htslib.org/doc/tabix.html">tabix</a>: indexing and querying of tab-delimited genomic position files.</li>
+        <li><a href="https://igv.org/">IGV</a>: interactive visualization of sequence alignments and variants.</li>
+      </ul>
+
+      <h2>Variant annotation</h2>
+      <ul class="tool-list">
+        <li><a href="https://annovar.openbioinformatics.org/">ANNOVAR</a>: functional annotation of genetic variants.</li>
+        <li><a href="https://wannovar.wglab.org/">wANNOVAR</a>: a web server for ANNOVAR.</li>
+        <li><a href="https://pcingola.github.io/SnpEff/">SnpEff</a>: variant annotation and effect prediction.</li>
+        <li><a href="https://www.ensembl.org/info/docs/tools/vep/index.html">Ensembl VEP</a>: Variant Effect Predictor, annotation against Ensembl transcripts.</li>
+        <li><a href="https://cadd.gs.washington.edu/">CADD</a>: deleteriousness scores for SNVs and indels.</li>
+        <li><a href="https://biosig.lab.uq.edu.au/">Biosig tools</a>: structure-based prediction of the effects of missense variants.</li>
+      </ul>
+
+      <h2>Genotype management and GWAS</h2>
+      <ul class="tool-list">
+        <li><a href="https://www.cog-genomics.org/plink/">PLINK 1.9</a> and <a href="https://www.cog-genomics.org/plink/2.0/">PLINK 2</a>: the standard toolkit for genotype data management, QC and GWAS.</li>
+        <li><a href="https://bedtools.readthedocs.io/">bedtools</a> and <a href="https://bedops.readthedocs.io/">BEDOPS</a>: manipulation of genomic intervals.</li>
+      </ul>
+
+      <h2>Linkage analysis</h2>
+      <ul class="tool-list">
+        <li>LINKAGE: single-point parametric linkage analysis.</li>
+        <li><a href="https://csg.sph.umich.edu/abecasis/merlin/">MERLIN</a>: multipoint linkage analysis of dense marker maps.</li>
+        <li>GENEHUNTER: multipoint linkage analysis.</li>
+      </ul>
+
+      <h2>Genotype phasing and imputation</h2>
+      <ul class="tool-list">
+        <li><a href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html">IMPUTE2</a>: genotype imputation and haplotype phasing.</li>
+        <li><a href="https://alkesgroup.broadinstitute.org/Eagle/">Eagle</a>: fast haplotype phasing, with or without a reference panel.</li>
+        <li><a href="https://github.com/odelaneau/shapeit5">SHAPEIT5</a>: haplotype phasing for large cohorts and sequencing data.</li>
+        <li><a href="https://faculty.washington.edu/browning/beagle/beagle.html">Beagle</a>: phasing and imputation in one tool.</li>
+        <li><a href="https://csg.sph.umich.edu/abecasis/MaCH/">MaCH</a>: haplotype-based genotype imputation.</li>
+        <li><a href="https://genome.sph.umich.edu/wiki/Minimac3">Minimac3</a> and <a href="https://genome.sph.umich.edu/wiki/Minimac4">Minimac4</a>: fast imputation into pre-phased data.</li>
+        <li><a href="https://imputationserver.sph.umich.edu/">Michigan Imputation Server</a>: a web server for fast and efficient phasing and imputation.</li>
+        <li><a href="https://imputation.biodatacatalyst.nhlbi.nih.gov/">TOPMed Imputation Server</a>: imputation with the TOPMed reference panel.</li>
+      </ul>
+
+      <h2>R libraries</h2>
+      <ul class="tool-list">
+        <li><a href="https://www.bioconductor.org/">Bioconductor</a>: a bioinformatics toolkit written in R.</li>
+        <li><a href="https://bioconductor.org/packages/snpStats/">snpStats</a>: reading PLINK files and SNP association analysis in R.</li>
+        <li><a href="https://cran.r-project.org/web/views/Bayesian.html">CRAN Task View: Bayesian Inference</a>: a curated list of Bayesian inference packages.</li>
+      </ul>
+
+      <h2>Fine-mapping</h2>
+      <ul class="tool-list">
+        <li><a href="https://github.com/stephenslab/susieR">susieR</a>: Sum of Single Effects regression for fine-mapping.</li>
+        <li><a href="http://www.christianbenner.com/">FINEMAP</a>: shotgun stochastic search for causal variants from summary statistics.</li>
+        <li><a href="https://github.com/omerwe/polyfun">PolyFun</a>: functionally informed fine-mapping with SuSiE or FINEMAP.</li>
+      </ul>
+
+      <h2>QTL mapping</h2>
+      <ul class="tool-list">
+        <li><a href="https://github.com/andreyshabalin/MatrixEQTL">Matrix eQTL</a>: ultra-fast eQTL analysis by matrix operations.</li>
+        <li><a href="https://github.com/francois-a/fastqtl">FastQTL</a>: fast cis-QTL mapping with permutation testing.</li>
+        <li><a href="https://github.com/broadinstitute/tensorqtl">tensorQTL</a>: GPU-accelerated QTL mapping.</li>
+        <li><a href="https://qtltools.github.io/qtltools/">QTLtools</a>: a complete toolkit for molecular QTL discovery.</li>
+      </ul>
+
+      <h2>LD score regression and polygenic scores</h2>
+      <ul class="tool-list">
+        <li><a href="https://github.com/bulik/ldsc">LDSC</a>: heritability and genetic correlation from GWAS summary statistics.</li>
+        <li><a href="https://privefl.github.io/bigsnpr/articles/LDpred2.html">LDpred2</a>: polygenic scores from summary statistics (the maintained successor of <a href="https://github.com/bvilhjal/ldpred">LDpred</a>).</li>
+        <li><a href="https://github.com/getian107/PRScs">PRS-CS</a>: polygenic prediction with continuous shrinkage priors.</li>
+      </ul>
+
+      <h2>Transcriptome-wide association (TWAS)</h2>
+      <ul class="tool-list">
+        <li><a href="http://gusevlab.org/projects/fusion/">FUSION</a>: a wrapper for several TWAS expression prediction methods.</li>
+        <li><a href="https://github.com/hakyimlab/MetaXcan">S-PrediXcan</a>: gene-level association from GWAS summary statistics.</li>
+      </ul>
+
+      <h2>Linear mixed models</h2>
+      <ul class="tool-list">
+        <li><a href="https://alkesgroup.broadinstitute.org/BOLT-LMM/BOLT-LMM_manual.html">BOLT-LMM</a>: mixed-model association for large cohorts.</li>
+        <li><a href="https://yanglab.westlake.edu.cn/software/gcta/#fastGWA">fastGWA</a>: resource-efficient mixed-model GWAS in GCTA.</li>
+        <li><a href="https://saigegit.github.io/SAIGE-doc/">SAIGE</a>: mixed models for binary traits with case-control imbalance.</li>
+        <li><a href="https://rgcgithub.github.io/regenie/">REGENIE</a>: whole-genome regression for quantitative and binary traits.</li>
+        <li><a href="https://github.com/genetics-statistics/GEMMA">GEMMA</a>: exact mixed-model association tests.</li>
+      </ul>
+
+      <h2>Visualization</h2>
+      <ul class="tool-list">
+        <li><a href="https://www.biorender.com/">BioRender</a>: professional figures for the biological sciences.</li>
+        <li><a href="https://my.locuszoom.org/">LocusZoom</a>: regional association plots.</li>
+        <li><a href="https://github.com/stephenturner/qqman">qqman</a>: Manhattan and Q-Q plots for GWAS results in R.</li>
+        <li><a href="https://ggplot2.tidyverse.org/">ggplot2</a>: the grammar-of-graphics plotting system in R.</li>
+      </ul>
+
+      <h2>Further resources</h2>
+      <ul class="tool-list">
+        <li><a href="https://gaow.github.io/genetic-analysis-software/0/">The Rockefeller List</a>: a comprehensive, searchable catalogue of genetic analysis programs.</li>
+        <li><a href="https://cran.r-project.org/web/views/Bayesian.html">CRAN Task View: Bayesian Inference</a>: R packages for Bayesian analysis.</li>
+      </ul>
+    </article>
+
+    <article id="sv-detection-syri" data-title="Structural Variations (SVs) calling: indels, CNVs, inversions and translocations"
+      data-group="Computational Genomics">
+      <p>Structural variants (SVs) are changes in the structure of a genome rather than in single bases. By convention
+        they are 50 bp or larger, and together they affect more of the genome than SNPs do. The main types are:</p>
+      <ul>
+        <li><strong>Deletions and insertions (indels):</strong> sequence lost or gained at one position. Indels
+          shorter than 50 bp are usually called alongside SNPs; longer ones are SVs.</li>
+        <li><strong>Copy number variants (CNVs):</strong> a region present in more or fewer copies than in the
+          reference, through deletion or duplication (tandem or dispersed).</li>
+        <li><strong>Inversions:</strong> a segment flipped in orientation, with no change in copy number.</li>
+        <li><strong>Translocations:</strong> a segment moved to another position or chromosome.</li>
+      </ul>
+
+      <h2>Three ways to detect SVs</h2>
+      <ul>
+        <li><strong>Short reads</strong> (Illumina): SVs are inferred indirectly, from read pairs that map too far
+          apart or in the wrong orientation, from reads split across a breakpoint, and from changes in coverage
+          (the main signal for CNVs). Tools include Manta, Delly and CNVnator.</li>
+        <li><strong>Long reads</strong> (Oxford Nanopore, PacBio): single reads span most SVs, so they are seen
+          directly. Tools include Sniffles2 and cuteSV.</li>
+        <li><strong>Genome assemblies</strong>: when two chromosome-level assemblies exist, aligning one to the other
+          shows every rearrangement between them, including large inversions and translocations that reads struggle
+          to resolve.</li>
+      </ul>
+      <p>Here I use the assembly approach with <a href="https://github.com/schneebergerlab/syri">SyRI</a> (Synteny and
+        Rearrangement Identifier; Goel <em>et al.</em>, <em>Genome Biology</em> 2019). From a whole-genome alignment
+        it separates syntenic regions from inversions, translocations and duplications, and reports the smaller
+        differences nested within them: SNPs, indels and highly diverged regions. The steps below compare a query
+        assembly (<code>qry.fa</code>) with a reference assembly (<code>ref.fa</code>) on Linux.</p>
+
+<pre><code>conda create -n syri -c conda-forge -c bioconda syri plotsr minimap2 samtools
+conda activate syri</code></pre>
+
+      <h2>1. Prepare the assemblies</h2>
+      <p>SyRI expects both assemblies to be chromosome-level, with homologous chromosomes sharing the same name and the
+        same orientation. Keep only the chromosomes, drop unplaced scaffolds and check that the names match:</p>
+<pre><code>samtools faidx ref.fa
+samtools faidx qry.fa
+cut -f1,2 ref.fa.fai
+cut -f1,2 qry.fa.fai</code></pre>
+      <p>If a query chromosome is reverse-complemented relative to the reference, flip it before aligning; otherwise
+        the whole chromosome is reported as one large inversion.</p>
+
+      <h2>2. Whole-genome alignment</h2>
+      <p>Align the query to the reference with minimap2 in assembly mode. <code>--eqx</code> writes
+        <code>=</code>/<code>X</code> CIGAR operations, which SyRI needs to distinguish matches from mismatches. Use
+        <code>asm5</code> for closely related genomes (under ~1% divergence) and <code>asm10</code> or
+        <code>asm20</code> for more divergent ones:</p>
+<pre><code>minimap2 -ax asm5 --eqx -t 16 ref.fa qry.fa | samtools sort -@ 8 -o ref_qry.bam
+samtools index ref_qry.bam</code></pre>
+
+      <h2>3. Identify synteny and rearrangements</h2>
+<pre><code>syri -c ref_qry.bam -r ref.fa -q qry.fa -F B --prefix ref_qry. --nc 8</code></pre>
+      <p>This writes <code>ref_qry.syri.out</code> (a tab-separated table of every region) and
+        <code>ref_qry.syri.vcf</code> (the same calls as a VCF). Column 11 of the table holds the annotation:
+        <code>SYN</code> syntenic, <code>INV</code> inversion, <code>TRANS</code>/<code>INVTR</code> translocation,
+        <code>DUP</code>/<code>INVDP</code> duplication, plus nested <code>SNP</code>, <code>INS</code>,
+        <code>DEL</code> and <code>HDR</code> (highly diverged region).</p>
+
+      <h2>4. Summarise the calls</h2>
+<pre><code># how many regions of each type
+cut -f11 ref_qry.syri.out | sort | uniq -c | sort -k1,1nr
+
+# inversions of at least 10 kb, with their reference and query coordinates
+awk -F'\t' '$11 == "INV" &amp;&amp; $3 - $2 &gt;= 10000 {print $1, $2, $3, $6, $7, $8}' \
+  OFS='\t' ref_qry.syri.out
+
+# insertions and deletions of at least 50 bp
+awk -F'\t' '($11 == "INS" || $11 == "DEL") &amp;&amp; (length($4) &gt;= 50 || length($5) &gt;= 50)' \
+  ref_qry.syri.out &gt; ref_qry.indels50.tsv</code></pre>
+
+      <h2>5. Visualise with plotsr</h2>
+      <p><a href="https://github.com/schneebergerlab/plotsr">plotsr</a>, from the same group, draws synteny and
+        rearrangements between the genomes. It reads a small table listing the assemblies in order:</p>
+<pre><code>printf '#file\tname\nref.fa\tReference\nqry.fa\tQuery\n' &gt; genomes.txt
+plotsr --sr ref_qry.syri.out --genomes genomes.txt -o ref_qry.plotsr.png</code></pre>
+      <p>Grey bands are syntenic regions; inversions, translocations and duplications are drawn in their own colours,
+        so large rearrangements stand out at a glance. For more than two genomes, run SyRI on each consecutive pair and
+        pass all the <code>.syri.out</code> files to plotsr with repeated <code>--sr</code> options, listing the
+        genomes in the same order.</p>
+    </article>
+
+  </div>
+
+  <!-- ============ BLOG POSTS DATABASE ============ -->
+  <!-- ADD YOUR NEW BLOGS HERE! -->
+  <!-- To add a new blog, copy the entire <article> block below, assign a unique id, and edit the data-title, data-date, and content -->
+  <div id="blog-database" style="display: none;">
+
+    <article id="start-research" data-title="How to Start Research in Computational Biology/Bioinformatics"
+      data-date="Oct 2026"
+      data-desc="A practical roadmap for students who want to move from coursework to real research.">
+      <p>Students often ask me how to get started with research in computational biology. Most of them have taken a
+        few bioinformatics courses, used BLAST or a web server, and now want to do something real but do not know
+        where to begin. This post is the advice I would give my younger self during my B.S. at GCUF.</p>
+
+      <h2>1. Start with a biological question, not a tool</h2>
+      <p>Good computational biology research begins with a question: which genes are differentially expressed under
+        drought stress, which variants are associated with a disease, how genome structure differs between two
+        cultivars. Tools and pipelines are only the means to answer it. Pick an area of biology that genuinely
+        interests you and read a few recent reviews in it before you open a terminal.</p>
+
+      <h2>2. Build the core skills</h2>
+      <ul>
+        <li><strong>Linux command line:</strong> navigating files, <code>grep</code>, <code>awk</code>,
+          <code>sed</code>, pipes and shell scripts. Almost every bioinformatics tool runs here.</li>
+        <li><strong>One programming language, properly:</strong> Python or R. Learn data handling (pandas or the
+          tidyverse) and plotting before anything fancy.</li>
+        <li><strong>Statistics:</strong> distributions, hypothesis testing, multiple testing correction and
+          regression. Most mistakes in genomics papers are statistical, not computational.</li>
+        <li><strong>Version control:</strong> put every project on Git and GitHub from day one.</li>
+        <li><strong>Working on a server or HPC:</strong> SSH, job schedulers such as SLURM, and environment managers
+          such as conda.</li>
+      </ul>
+
+      <h2>3. Learn by reproducing a published analysis</h2>
+      <p>The fastest way to learn is to pick a paper in your area that uses public data, download the raw data from
+        NCBI GEO, SRA or ENA, and try to reproduce one of its main figures. You will run into missing parameters,
+        broken links and version conflicts, and solving those problems is exactly what research feels like. Write
+        down every command you run.</p>
+
+      <h2>4. Find a mentor and a lab</h2>
+      <p>Research is much easier with guidance. Look for faculty whose recent papers you actually understand and find
+        interesting. When you email them, keep it short: who you are, which of their papers you read, what you found
+        interesting, the skills you already have, and a link to your GitHub. A specific, honest email gets a reply far
+        more often than a generic one sent to fifty people.</p>
+
+      <h2>5. Start small and finish</h2>
+      <p>Your first project does not need to be groundbreaking. A small, well-defined analysis that you complete,
+        document and write up teaches more than an ambitious project that never ends. Keep a lab notebook (a Markdown
+        file is enough), organize your folders by raw data, scripts and results, and make your work reproducible so
+        that someone else could rerun it.</p>
+
+      <h2>6. Read papers regularly</h2>
+      <p>Set aside time every week to read. For each paper, ask what question it answers, what data and methods it
+        uses, and what its limitations are. Read the methods section carefully, since that is where you learn which
+        tools people actually use and why.</p>
+
+      <h2>7. Share your work</h2>
+      <p>Put your code on GitHub with a clear README, present at student symposia and conferences, and write up your
+        results, even as a preprint. Writing forces you to understand your own analysis, and visible work is what
+        opens doors to the next position.</p>
+
+      <h2>Common mistakes to avoid</h2>
+      <ul>
+        <li>Running tools with default parameters without understanding what they do.</li>
+        <li>Skipping quality control of the input data.</li>
+        <li>Trying to learn every tool instead of mastering a few.</li>
+        <li>Working alone for months without showing your results to anyone.</li>
+      </ul>
+
+      <h2>Useful resources</h2>
+      <ul>
+        <li><a href="https://rosalind.info/" target="_blank">Rosalind</a>: bioinformatics programming problems.</li>
+        <li><a href="https://software-carpentry.org/lessons/" target="_blank">Software Carpentry</a>: lessons on the
+          shell, Git, Python and R.</li>
+        <li><a href="https://www.ebi.ac.uk/training/" target="_blank">EMBL-EBI Training</a>: free courses on
+          databases and analysis methods.</li>
+        <li><a href="https://www.biostars.org/" target="_blank">Biostars</a>: a Q&amp;A forum for bioinformatics.</li>
+        <li><a href="#tutorials">My Bioinformatics Tutorials</a>: hands-on walkthroughs of the workflows I use.</li>
+      </ul>
+
+      <p>Everyone starts somewhere. Be curious, be consistent, and do not be afraid to ask questions.</p>
+    </article>
+
+  </div>
+
+</body>
+
+</html>
